@@ -1,0 +1,24 @@
+---
+- name: Set paths to remove if default redis instance is not configured
+  ansible.builtin.set_fact:
+    redis_default_paths:
+      - /etc/redis.conf
+      - /etc/redis/redis.conf
+      - /usr/lib/systemd/system/redis.service
+      - /etc/systemd/system/redis.service.d
+
+- name: Disable and stop redis service
+  service:
+    name: redis
+    state: stopped
+    enabled: false
+
+- name: Remove configuration of default redis instance
+  ansible.builtin.file:
+    path: /etc/redis/redis.conf
+    state: absent
+
+- name: Remove configuration of default redis instance
+  ansible.builtin.file:
+    path: /etc/redis.conf
+    state: absent

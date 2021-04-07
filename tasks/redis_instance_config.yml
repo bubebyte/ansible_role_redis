@@ -1,0 +1,36 @@
+---
+- name: debug instance config
+  debug:
+    msg: "{{ redis_instance }}"
+
+- name: "Place redis configuration for instance {{ redis_instance.name }}"
+  ansible.builtin.template:
+    src: redis.conf.j2
+    dest: "/etc/redis/{{ redis_instance.name }}.conf"
+    owner: redis
+    group: redis
+    mode: '0640'
+
+- name: "Place redis systemd unit file for instance {{ redis_instance.name }}"
+  ansible.builtin.template:
+    src: redis.service.j2
+    dest: "/usr/lib/systemd/system/{{ redis_instance.name }}.service"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Create systemd drop in directory for redis instance {{ redis_instance.name }}"
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ redis_instance.name }}.service.d"
+    owner: root
+    group: root
+    state: directory
+    mode: '0755'
+
+- name: "Place limit file for instance {{ redis_instance.name }}"
+  ansible.builtin.template:
+    src: limit.conf.j2
+    dest: "/etc/systemd/system/{{ redis_instance.name }}.service.d/limit.conf"
+    owner: root
+    group: root
+    mode: '0644'

@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+
+{% for config_line in redis_instance.configuration %}
+{{ config_line }}
+{% endfor %}

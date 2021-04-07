@@ -1,0 +1,45 @@
+---
+- name: Create empty list to collect instance names
+  ansible.builtin.set_fact:
+    redis_instance_names: []
+
+- name: Store instance names
+  ansible.builtin.set_fact:
+    redis_instance_names: "{{ redis_instance_names + [redis_instance.name] }}"
+  loop: "{{ redis_instances }}"
+  loop_control:
+    loop_var: redis_instance
+
+- name: debug redis_instances
+  debug:
+    msg: "{{ item }}"
+  loop: "{{ redis_instance_names }}"
+
+- name: Install redis
+  ansible.builtin.package:
+    name: "redis"
+    state: present
+
+- name: Create a directory for redis configurations
+  ansible.builtin.file:
+    path: /etc/redis
+    owner: redis
+    group: redis
+    state: directory
+    mode: '0750'
+
+- name: Include task to remove default instance (if not configured to exist)
+  include_tasks: remove_default_redis_instance.yml
+  when: "'redis' not in redis_instance_names"
+
+- name: Include task to place redis instance config
+  include_tasks: redis_instance_config.yml
+  loop: "{{ redis_instances }}"
+  loop_control:
+    loop_var: redis_instance
+
+#- name: Enable and start redis service
+#  service:
+#    name: redis
+#    state: started
+#    enabled: true
