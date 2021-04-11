@@ -42,3 +42,9 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: "Enable and start redis service instance {{ redis_instance.name }}"
+  service:
+    name: "{{ redis_instance.name }}"
+    state: started
+    enabled: true
