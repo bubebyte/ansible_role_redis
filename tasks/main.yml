@@ -38,8 +38,9 @@
   loop_control:
     loop_var: redis_instance
 
-#- name: Enable and start redis service
-#  service:
-#    name: redis
-#    state: started
-#    enabled: true
+- name: "Enable and start redis service for instance {{ item }}"
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop: "{{ redis_instance_names }}"

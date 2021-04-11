@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/redis-server /etc/redis/{{ redis_instance.name }}.conf --supervised systemd
-ExecStop=/usr/libexec/redis-shutdown
+ExecStop=/usr/libexec/redis-shutdown {{ redis_instance.name }}
 Type=notify
 User=redis
 Group=redis

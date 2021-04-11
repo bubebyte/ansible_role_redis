@@ -34,3 +34,11 @@
     owner: root
     group: root
     mode: '0644'
+
+- name: "Place redis shutdown script"
+  ansible.builtin.template:
+    src: redis-shutdown.j2
+    dest: "/usr/libexec/redis-shutdown"
+    owner: root
+    group: root
+    mode: '0755'
