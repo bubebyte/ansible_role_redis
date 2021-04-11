@@ -1,0 +1,51 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Install "net-tools" package
+      package:
+        name: net-tools
+
+    - name: Gather service facts
+      service_facts:
+
+    - name: Gather listening ports
+      community.general.listen_ports_facts:
+
+    - name: "DEBUG: Print status of redis.service"
+      debug:
+        var: ansible_facts.services["redis.service"]
+
+    - name: "DEBUG: Print ansible_facts.tcp_listen"
+      debug:
+        var: ansible_facts.tcp_listen
+
+    - name: "Create empty list to store tcp listen ports"
+      ansible.builtin.set_fact:
+        tcp_listen_ports: []
+
+    - name: "Store listen ports"
+      ansible.builtin.set_fact:
+        tcp_listen_ports: "{{ tcp_listen_ports + [item] }}"
+      loop: "{{ ansible_facts.tcp_listen | select('search', 'redis') | map(attribute='port') | unique | list }}"
+
+    - name: Fail if redis is not listening on a tcp port
+      fail:
+        msg: Redis is not listening on a tcp port
+      when: tcp_listen_ports | length == 0
+
+    - name: Additional checks of RHEL based systems
+      block:
+        - name: Check redis service state
+          fail:
+            msg: The service redis is not running.
+          when: ansible_facts.services["redis.service"].state != "running"
+
+        - name: Check redis service state
+          fail:
+            msg: The service redis is not enabled.
+          when: ansible_facts.services["redis.service"].status != "enabled"
+      when: ansible_os_family == "RedHat"
