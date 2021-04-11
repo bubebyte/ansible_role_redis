@@ -1,5 +1,15 @@
 # {{ ansible_managed }}
 
-{% for config_line in redis_instance.configuration %}
-{{ config_line }}
+{% for key, value in redis_instance.configuration.items() %}
+{% if value is iterable %}
+{% if value is string %}
+{{ key }} {{ value }}
+{% else %}
+{% for value_item in value %}
+{{ key }} {{ value_item }}
+{% endfor %}
+{% endif %}
+{% else %}
+{{ key }} {{ value }}
+{% endif %}
 {% endfor %}
