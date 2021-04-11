@@ -3,7 +3,7 @@
 # redis
 
 ## Description
-Ansible role to install an configure redis.
+Ansible role to install and configure redis.
 
 ## Example Playbook
 ```YAML
