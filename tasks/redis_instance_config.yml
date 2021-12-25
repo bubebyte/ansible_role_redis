@@ -14,7 +14,7 @@
 - name: "Place redis systemd unit file for instance {{ redis_instance.name }}"
   ansible.builtin.template:
     src: redis.service.j2
-    dest: "/usr/lib/systemd/system/{{ redis_instance.name }}.service"
+    dest: "{{ redis_systemd_unit_file_dir }}/{{ redis_instance.name }}.service"
     owner: root
     group: root
     mode: '0644'
