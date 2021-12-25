@@ -1,4 +1,7 @@
 ---
+- name: Include OS specific variables
+  include_vars: "os_family_{{ ansible_os_family|lower }}.yml"
+
 - name: Create empty list to collect instance names
   ansible.builtin.set_fact:
     redis_instance_names: []
