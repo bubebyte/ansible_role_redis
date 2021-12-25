@@ -1,5 +1,3 @@
-# STATUS: Draft
-
 # redis
 
 ## Description
