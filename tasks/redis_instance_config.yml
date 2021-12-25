@@ -42,6 +42,7 @@
     owner: root
     group: root
     mode: '0755'
+  when: ansible_os_family|lower == "redhat"
 
 - name: "Enable and start redis service instance {{ redis_instance.name }}"
   service:
